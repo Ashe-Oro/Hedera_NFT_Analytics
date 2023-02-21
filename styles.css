@@ -1,0 +1,77 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding-left: 30px; /* Added padding-left */
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    //padding-left: 20px; /* Added padding-left */
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  form label {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  form input[type="text"],
+  form textarea {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    border: 2px solid #ccc;
+  }
+  
+  form button[type="submit"] {
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #0077cc;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  form button[type="submit"]:hover {
+    background-color: #005ea0;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  }
+  
+  table th,
+  table td {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  table th {
+    background-color: #f2f2f2;
+  }
+  
+  tbody tr:hover {
+    background-color: #f2f2f2;
+  }
+  
+  #token-counts {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  
