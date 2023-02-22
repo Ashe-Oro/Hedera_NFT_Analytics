@@ -15,7 +15,8 @@
     <label for="tokenIds">Token IDs (one per line):</label>
     <textarea id="tokenIds" name="tokenIds" rows="5">0.0.1643212
 0.0.1864141
-0.0.1885269</textarea><br><br><br>
+0.0.1885269
+0.0.1885278</textarea><br><br><br>
     <button type="submit">Get Balances</button>
   </form>
   <h2>Number of Accounts Holding Each NFT</h2>
@@ -29,7 +30,7 @@
     <tbody>
     </tbody>
   </table>
-  <h2>Account balances for each NFT</h2>
+  <!--   <h2>Account balances for each NFT</h2>
   <table id="balances-table">
     <thead>
       <tr>
@@ -40,7 +41,7 @@
     </thead>
     <tbody>
     </tbody>
-  </table>
+ --> </table>
   <div id="token-counts">
     <table id="token-counts-table">
       <thead>
@@ -68,7 +69,7 @@
 
 
     const form = document.getElementById("balances-form");
-    const balancesTableBody = document.querySelector("#balances-table tbody");
+    // const balancesTableBody = document.querySelector("#balances-table tbody");
     const holdersTableBody = document.querySelector("#holders-table tbody");
     let tokenCountsTableBody = document.querySelector("#token-counts-table tbody");
     tokenCountsTableBody.innerHTML = "";
@@ -81,7 +82,7 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      balancesTableBody.innerHTML = "";
+      // balancesTableBody.innerHTML = "";
       holdersTableBody.innerHTML = "";
       tokenCountsTableBody.innerHTML = ""; // clear the token counts table body
       countsTableBody.innerHTML = "";
@@ -101,21 +102,31 @@
 
         const { balances, accountsWithAllTokens, tokenCounts } = await getBalances(greaterThanBalance, tokenIds);
 
+        /*
+                balances.forEach(balance => {
+                  // Display the balances in the new table
+                  const row = document.createElement("tr");
+                  const tokenIdCell = document.createElement("td");
+                  tokenIdCell.textContent = balance.tokenId;
+                  const accountCell = document.createElement("td");
+                  accountCell.textContent = balance.account;
+                  const balanceCell = document.createElement("td");
+                  balanceCell.textContent = balance.balance;
+                  row.appendChild(tokenIdCell);
+                  row.appendChild(accountCell);
+                  row.appendChild(balanceCell);
+                  balancesTableBody.appendChild(row);
+                });
+        */
 
-        balances.forEach(balance => {
-          // Display the balances in the new table
-          const row = document.createElement("tr");
-          const tokenIdCell = document.createElement("td");
-          tokenIdCell.textContent = balance.tokenId;
-          const accountCell = document.createElement("td");
-          accountCell.textContent = balance.account;
-          const balanceCell = document.createElement("td");
-          balanceCell.textContent = balance.balance;
-          row.appendChild(tokenIdCell);
-          row.appendChild(accountCell);
-          row.appendChild(balanceCell);
-          balancesTableBody.appendChild(row);
-        });
+        // Add a new row to display the count of accounts with all tokens
+        const countRow = document.createElement("tr");
+        const countCell = document.createElement("td");
+        countCell.textContent = 'Accounts Total = ' +accountsWithAllTokens.length;
+        countCell.setAttribute("colspan", "2");
+        countRow.appendChild(countCell);
+        holdersTableBody.insertBefore(countRow, holdersTableBody.firstChild);
+
         // Display the accounts which own all tokens in the new table
         accountsWithAllTokens.forEach(account => {
           const row = document.createElement("tr");
