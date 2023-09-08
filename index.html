@@ -89,7 +89,7 @@
 
       const greaterThanBalanceInput = form.elements["greater-than-balance"];
       var greaterThanBalance = greaterThanBalanceInput.value;
-      greaterThanBalance--;
+      greaterThanBalance;
 
       console.log('GreaterThanBalance: ' + greaterThanBalance);
 
@@ -182,7 +182,7 @@
       const resultsPerPage = '&limit=100';
       let balances = [];
       let uniqueAccounts = new Set();
-      let url_end = '/balances?account.balance=gt%3A' + greaterThanBalance + resultsPerPage;
+      let url_end = '/balances?account.balance=gte%3A' + greaterThanBalance + resultsPerPage;
 
       for (let i = 0; i < tokenIds.length; i++) {
         //setting each tokenId to a specific token provided by the user
