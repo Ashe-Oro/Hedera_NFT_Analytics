@@ -13,10 +13,15 @@
     <label for="greater-than-balance">Minimum Balance for each NFT:</label>
     <input type="text" id="greater-than-balance" name="greater-than-balance" value="1"><br><br><br>
     <label for="tokenIds">Token IDs (one per line):</label>
-    <textarea id="tokenIds" name="tokenIds" rows="5"></textarea><br><br><br>
-    <button type="submit">Get Balances</button>
+    <textarea id="tokenIds" name="tokenIds" rows="5">0.0.3308587</textarea><br><br><br>
+    <button type="submit">Submit</button>
   </form>
-  <h2>Number of Accounts Holding Each NFT</h2>
+  <h2>Total Lifetime Transactions</h2>
+<input type="text" id="total-transactions" readonly>
+
+</table>
+  </div>
+   <h2>Number of Accounts Holding Each NFT</h2>
   <table id="counts-table">
     <thead>
       <tr>
@@ -27,7 +32,8 @@
     <tbody>
     </tbody>
   </table>
-  <!--   <h2>Account balances for each NFT</h2>
+   
+  <h2>Account balances for each NFT</h2>
   <table id="balances-table">
     <thead>
       <tr>
@@ -38,7 +44,8 @@
     </thead>
     <tbody>
     </tbody>
- --> </table>
+  </table>
+ 
   <div id="token-counts">
     <table id="token-counts-table">
       <thead>
@@ -61,45 +68,54 @@
     <tbody>
     </tbody>
   </table>
+
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
   <script>
 
 
     const form = document.getElementById("balances-form");
-    // const balancesTableBody = document.querySelector("#balances-table tbody");
+    const balancesTableBody = document.querySelector("#balances-table tbody");
     const holdersTableBody = document.querySelector("#holders-table tbody");
     let tokenCountsTableBody = document.querySelector("#token-counts-table tbody");
     tokenCountsTableBody.innerHTML = "";
     const countsTableBody = document.querySelector("#counts-table tbody");
     countsTableBody.innerHTML = "";
-
-
-
+    document.getElementById("total-transactions").value = "";
 
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      // balancesTableBody.innerHTML = "";
+      balancesTableBody.innerHTML = "";
       holdersTableBody.innerHTML = "";
       tokenCountsTableBody.innerHTML = ""; // clear the token counts table body
       countsTableBody.innerHTML = "";
+      document.getElementById("total-transactions").value = "";
+
 
       const greaterThanBalanceInput = form.elements["greater-than-balance"];
       var greaterThanBalance = greaterThanBalanceInput.value;
       greaterThanBalance;
 
-      console.log('GreaterThanBalance: ' + greaterThanBalance);
+      //console.log('GreaterThanBalance: ' + greaterThanBalance);
 
       const tokenIdsInput = form.elements["tokenIds"];
 
       const tokenIds = tokenIdsInput.value.split("\n").map(id => id.trim()).filter(id => id);
       tokenCountsTableBody = document.querySelector("#token-counts-table tbody");
 
+       // Assuming the first token ID is used for getting transactions
+      if (tokenIds.length > 0) {
+        const totalTransactions = await getTransactions(tokenIds);
+        console.log('Total Transactions: ' + totalTransactions);
+    document.getElementById("total-transactions").value = totalTransactions;
+  
+  }
+    
       try {
 
         const { balances, accountsWithAllTokens, tokenCounts } = await getBalances(greaterThanBalance, tokenIds);
 
-        /*
+        
                 balances.forEach(balance => {
                   // Display the balances in the new table
                   const row = document.createElement("tr");
@@ -114,7 +130,7 @@
                   row.appendChild(balanceCell);
                   balancesTableBody.appendChild(row);
                 });
-        */
+        
 
         // Add a new row to display the count of accounts with all tokens
         const countRow = document.createElement("tr");
@@ -140,7 +156,7 @@
           tokenIdCell.textContent = tokenCount.tokenId;
           const balanceCell = document.createElement("td");
           balanceCell.textContent = `${tokenCount.count.toString()} `;
-          console.log('TokenAccount to string: ' + tokenCount.count.toString());
+          //console.log('TokenAccount to string: ' + tokenCount.count.toString());
           row.appendChild(tokenIdCell);
           row.appendChild(balanceCell);
           tokenCountsTableBody.appendChild(row);
@@ -240,7 +256,7 @@
 
       }, {});
       //checking the holders object 
-      console.log('Holders: ', holders);
+      //console.log('Holders: ', holders);
 
 
       let accountsWithAllTokens = Object.entries(holders)
@@ -268,7 +284,7 @@
 
       tokenCounts.sort((a, b) => b.count - a.count);
 
-      console.log('TokenCounts:', tokenCounts);
+      //console.log('TokenCounts:', tokenCounts);
 
       return { balances, accountsWithAllTokens, tokenCounts };
     }
@@ -282,11 +298,60 @@
       let accountArray = Array.from(uniqueAccounts);
 
       //console.log('Unique Accounts: '+ accountArray + ' for token: ' + tokenId);
-      console.log('Unique Accounts Length: ' + uniqueAccounts.size + ' for token: ' + tokenId);
+      //console.log('Unique Accounts Length: ' + uniqueAccounts.size + ' for token: ' + tokenId);
 
       return { tokenId: tokenId, count: uniqueAccounts.size };
     }
   </script>
+  
+  <script>
+    async function getTransactions(tokenId) {
+      
+      console.log('Token ID: ' + tokenId)
+      const url_start = 'https://mainnet-public.mirrornode.hedera.com';
+      let totalTransactions = 0;
+      let tokenInfo = await axios.get(`${url_start}/api/v1/tokens/${tokenId}`);
+      let totalSupply = tokenInfo.data.total_supply;
+      //console.log(`Total supply for token ${tokenId}: ${totalSupply}`);
+      for(let serialNumber = 1; serialNumber <= totalSupply; serialNumber++) {
+       // console.log('Serial Number: ' + serialNumber);
+        let next_url = `${url_start}/api/v1/tokens/${tokenId}/nfts/${serialNumber}/transactions`;
+        while (next_url) {
+          try {
+            let response = await axios.get(next_url);
+            let transactions = response.data.transactions;
+            transactions.forEach(transaction => {
+              if (transaction.type === "CRYPTOTRANSFER") {
+                totalTransactions += 1;
+              }
+            });
+            next_url = response.data.links.next ? url_start + response.data.links.next : null;
+          } catch (error) {
+            throw error;
+          }
+        }
+      }
+      console.log(`Total CRYPTOTRANSFER transactions for token ${tokenId}: ${totalTransactions}`);
+      return totalTransactions;
+    
+    }
+
+
+
+  </script>
+   
+  
 </body>
 
 </html>
+
+<!-- TODO
+
+**SHOULD THIS PROJECT BE BROKEN DOWN INTO SMALLER PROJECTS?**
+
+  1. Fetch and sum total transaction fee for each NFT
+  2. Fetch and sum total transaction fees for collection
+  3. Fetch and sum total transaction fees for all collections
+  4. Fetch and add total number of transactions for all collections
+  5. Calculate the number of transactions per NFT
+  6. Calculate average account age for each Collection
