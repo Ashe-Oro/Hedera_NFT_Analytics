@@ -13,11 +13,38 @@
     <label for="greater-than-balance">Minimum Balance for each NFT:</label>
     <input type="text" id="greater-than-balance" name="greater-than-balance" value="1"><br><br><br>
     <label for="tokenIds">Token IDs (one per line):</label>
-    <textarea id="tokenIds" name="tokenIds" rows="5">0.0.3308587</textarea><br><br><br>
+    <textarea id="tokenIds" name="tokenIds" rows="5">0.0.3838071</textarea><br><br><br>
     <button type="submit">Submit</button>
   </form>
-  <h2>Total Lifetime Transactions</h2>
-<input type="text" id="total-transactions" readonly>
+  <h2>Total Lifetime Transactions and Fees</h2>
+  <table id="total-transactions" style="width: 20%;">
+    <thead>
+      <tr>
+        <th>Transaction Type</th>
+        <th>Transaction Total</th>
+        <th>Fee Total (in hbar)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Token Transfers</td>
+        <td></td>
+        <td></td>  <!-- New row -->
+      </tr>
+      <tr>
+        <td>Token Mint</td>
+        <td></td>
+        <td></td>  <!-- New row -->
+      </tr>
+      <tr>
+        <td>Token Creation</td>
+        <td></td>
+        <td></td>  <!-- New row -->
+      </tr>
+    </tbody>
+  </table>
+
+
 
 </table>
   </div>
@@ -83,12 +110,10 @@
 
 **SHOULD THIS PROJECT BE BROKEN DOWN INTO SMALLER PROJECTS?**
 
-  1. Fetch and sum total transaction fee for each NFT
-  2. Fetch and sum total transaction fees for collection
-  3. Fetch and sum total transaction fees for all collections
-  4. Fetch and add total number of transactions for all collections
+  1. Fetch and sum total transaction fee for each NFT association, mint and transaction
+
+  3. Sum total transaction fees for entire collection + nfts
+
   5. Calculate the number of transactions per NFT
-  6. Calculate average account age for each Collection
-  7. Break out JS and HTML
-  8. Explore using HGraph.io
+  
 -->

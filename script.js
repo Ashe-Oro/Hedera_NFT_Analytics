@@ -23,7 +23,7 @@
 
      const greaterThanBalanceInput = form.elements["greater-than-balance"];
      var greaterThanBalance = greaterThanBalanceInput.value;
-     greaterThanBalance;
+   
 
      //console.log('GreaterThanBalance: ' + greaterThanBalance);
 
@@ -33,13 +33,49 @@
      tokenCountsTableBody = document.querySelector("#token-counts-table tbody");
 
       // Assuming the first token ID is used for getting transactions
+      // Get the total number of transfers and mints for the first token ID
+    /*
+      if (tokenIds.length > 0) {
+        const totalTransactions = await getTransactions(tokenIds);
+        console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
+        console.log('Total Mints: ' + totalTransactions.totalTokenMints);
       
-     if (tokenIds.length > 0) {
-       const totalTransactions = await getTransactions(tokenIds);
-       console.log('Total Transactions: ' + totalTransactions);
-   document.getElementById("total-transactions").value = totalTransactions;
- 
- }
+        // Update the table with the total transfers and total mints
+        const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
+        const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
+        const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
+      
+        if (totalTransfersCell && totalMintsCell) {
+            totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
+            totalMintsCell.textContent = totalTransactions.totalTokenMints;
+          } else {
+            console.error("Error: Unable to find the table cells for total transfers and total mints.");
+          }
+      }
+*/
+      // Assuming the first token ID is used for getting transactions
+      // Get the total number of transfers and mints for the first token ID
+      if (tokenIds.length > 0) {
+        const totalTransactions = await getTransactions(tokenIds);
+        console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
+        console.log('Total Mints: ' + totalTransactions.totalTokenMints);
+      
+        // Update the table with the total transfers and total mints
+        const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
+        const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
+        const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
+        
+        totalCreatesCell.textContent = await getTokenCreationCost(tokenIds);
+      
+        if (totalTransfersCell && totalMintsCell) {
+            totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
+            totalMintsCell.textContent = totalTransactions.totalTokenMints;
+          } else {
+            console.error("Error: Unable to find the table cells for total transfers and total mints.");
+          }
+      }
+
+
 
      try {
 
@@ -239,12 +275,15 @@
      
      console.log('Token ID: ' + tokenId)
      const url_start = 'https://mainnet-public.mirrornode.hedera.com';
-     let totalTransactions = 0;
+     let totalTransfers = {
+       totalTokenTransfers: 0,
+       totalTokenMints: 0,
+     };
      let tokenInfo = await axios.get(`${url_start}/api/v1/tokens/${tokenId}`);
      let totalSupply = tokenInfo.data.total_supply;
      //console.log(`Total supply for token ${tokenId}: ${totalSupply}`);
      for(let serialNumber = 1; serialNumber <= totalSupply; serialNumber++) {
-      // console.log('Serial Number: ' + serialNumber);
+       console.log('Serial Number: ' + serialNumber);
        let next_url = `${url_start}/api/v1/tokens/${tokenId}/nfts/${serialNumber}/transactions`;
        while (next_url) {
          try {
@@ -252,7 +291,9 @@
            let transactions = response.data.transactions;
            transactions.forEach(transaction => {
              if (transaction.type === "CRYPTOTRANSFER") {
-               totalTransactions += 1;
+               totalTransfers.totalTokenTransfers += 1;
+             } else if (transaction.type === "TOKENMINT") {
+               totalTransfers.totalTokenMints += 1;
              }
            });
            next_url = response.data.links.next ? url_start + response.data.links.next : null;
@@ -261,9 +302,63 @@
          }
        }
     }
-     console.log(`Total CRYPTOTRANSFER transactions for token ${tokenId}: ${totalTransactions}`);
-     return totalTransactions;
-   
-   }
+  
+    //console.log(`Total CRYPTOTRANSFER transactions for token ${tokenId}: ${totalTransfers.totalTokenTransfers}`);
+    return totalTransfers;
+  }
 
- 
+
+// This function gets the token creation fee for the given tokenId
+// It returns the token creation fee as a number
+// The token creation fee is used to calculate the total cost of the NFTs
+//
+  async function getTokenCreationCost(tokenId) {
+    let createdTimestamp = await getTimestamp(tokenId);
+    
+    try {
+      const response = await axios.get(`https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?timestamp=${createdTimestamp}`);
+      //console.log('Timestamp URL: https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?timestamp=' + createdTimestamp);
+     // console.log(response);
+      const data = response.data;
+      console.log('Node = ' + data.transactions.node);
+     // console.log('Data: ', data); // Log the data object directly
+     const transfers = data.transactions[0].transfers;
+if (transfers && transfers.length > 0) {
+  const transfer = transfers.find(transfer => transfer.amount < 0);
+  if (transfer) {
+    const amount = transfer.amount;
+    let tokenCreationFee = -1 * amount;
+    tokenCreationFee = tokenCreationFee / 100000000;
+    console.log('Token Creation Fee: ' + tokenCreationFee + " hbar");
+    return tokenCreationFee;
+  } else {
+    console.log('No transfers with negative amount found for the given tokenId.');
+    return 0; // or handle the case when no transfers with negative amount are found
+  }
+} else {
+  console.log('No transfers found for the given tokenId.');
+  return 0; // or handle the case when no transfers are found
+}
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  // This function gets the timestamp for the token creation transaction
+  // It returns the timestamp as a string
+  // The timestamp is used to get the transaction for the token creation fee
+  async function getTimestamp(tokenId) {
+    return new Promise((resolve, reject) => {
+      axios.get(`https://mainnet-public.mirrornode.hedera.com/api/v1/tokens/${tokenId}`)
+        .then(response => {
+          const createdTimestamp = response.data.created_timestamp;
+          console.log('Created Timestamp: ' + createdTimestamp);
+          resolve(createdTimestamp);
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
+  
