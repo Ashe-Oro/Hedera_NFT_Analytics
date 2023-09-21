@@ -11,6 +11,12 @@
    countsTableBody.innerHTML = "";
    document.getElementById("total-transactions").value = "";
 
+   const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
+   const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
+   const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
+   const cell_totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(2)");
+   const cell_total_CRYPTOTRANSFER_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(3)");
+   const cell_total_TOKENMINT_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(3)");
 
    form.addEventListener("submit", async (event) => {
      event.preventDefault();
@@ -19,8 +25,12 @@
      tokenCountsTableBody.innerHTML = ""; // clear the token counts table body
      countsTableBody.innerHTML = "";
      document.getElementById("total-transactions").value = "";
-
-   
+     totalTransfersCell.textContent = "";
+      totalMintsCell.textContent = "";
+      totalCreatesCell.textContent = "";
+      cell_totalCreatesCell .textContent = "";
+      cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
+      cell_total_TOKENMINT_FEES_PAID.textContent = "";  
 
 
      const greaterThanBalanceInput = form.elements["greater-than-balance"];
@@ -36,41 +46,15 @@
 
       // Assuming the first token ID is used for getting transactions
       // Get the total number of transfers and mints for the first token ID
-    /*
-      if (tokenIds.length > 0) {
-        const totalTransactions = await getTransactions(tokenIds);
-        console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
-        console.log('Total Mints: ' + totalTransactions.totalTokenMints);
-      
-        // Update the table with the total transfers and total mints
-        const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
-        const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
-        const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
-      
-        if (totalTransfersCell && totalMintsCell) {
-            totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
-            totalMintsCell.textContent = totalTransactions.totalTokenMints;
-          } else {
-            console.error("Error: Unable to find the table cells for total transfers and total mints.");
-          }
-      }
-*/
-      // Assuming the first token ID is used for getting transactions
-      // Get the total number of transfers and mints for the first token ID
       if (tokenIds.length > 0) {
         const totalTransactions = await getTransactions(tokenIds);
         //console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
         //console.log('Total Mints: ' + totalTransactions.totalTokenMints);
       
         // Update the table with the total transfers and total mints
-        const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
-        const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
-        const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
-        const cell_totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(2)");
-        const cell_total_CRYPTOTRANSFER_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(3)");
-        const cell_total_TOKENMINT_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(3)");
 
-          totalTransfersCell.textContent = "";
+
+      totalTransfersCell.textContent = "";
      totalMintsCell.textContent = "";
      totalCreatesCell.textContent = "";
      cell_totalCreatesCell .textContent = "";
@@ -91,10 +75,6 @@
       }
 
   
-      
-
-
-
      try {
 
        const { balances, accountsWithAllTokens, tokenCounts } = await getBalances(greaterThanBalance, tokenIds);
@@ -310,11 +290,11 @@
           
           for (let transaction of transactions) {
             if (transaction.type === "CRYPTOTRANSFER") {
-              console.log('Transaction: ' + transaction.type);
+              //console.log('Transaction: ' + transaction.type);
               totalTransfers.totalTokenTransfers += 1;
               totalTransfers.CRYPTOTRANSFER_FEES_PAID += await getTransactionFees(transaction);
             } else if (transaction.type === "TOKENMINT") {
-              console.log('Transaction: ' + transaction.type);
+             // console.log('Transaction: ' + transaction.type);
               totalTransfers.totalTokenMints += 1;
               totalTransfers.TOKENMINT_FEES_PAID += await getTransactionFees(transaction);
             }
@@ -348,7 +328,7 @@
       transfers.forEach(transfer => {
         if (transfer.amount < 0) {
           feesPaid += Math.abs(transfer.amount);
-          console.log('Fee added: ' + Math.abs(transfer.amount));
+         // console.log('Fee added: ' + Math.abs(transfer.amount));
         }
       });
   
@@ -384,8 +364,8 @@ if (transfers && transfers.length > 0) {
     const amount = transfer.amount;
     let tokenCreationFee = -1 * amount;
     tokenCreationFee = tokenCreationFee / 100000000;
-    console.log('Token Creation Fee: ' + tokenCreationFee + " hbar");
-    console.log('--------------------------------------------------------')
+   // console.log('Token Creation Fee: ' + tokenCreationFee + " hbar");
+   // console.log('--------------------------------------------------------')
     return tokenCreationFee;
   } else {
     console.log('No transfers with negative amount found for the given tokenId.');
