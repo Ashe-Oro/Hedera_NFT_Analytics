@@ -20,6 +20,8 @@
      countsTableBody.innerHTML = "";
      document.getElementById("total-transactions").value = "";
 
+   
+
 
      const greaterThanBalanceInput = form.elements["greater-than-balance"];
      var greaterThanBalance = greaterThanBalanceInput.value;
@@ -57,23 +59,39 @@
       // Get the total number of transfers and mints for the first token ID
       if (tokenIds.length > 0) {
         const totalTransactions = await getTransactions(tokenIds);
-        console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
-        console.log('Total Mints: ' + totalTransactions.totalTokenMints);
+        //console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
+        //console.log('Total Mints: ' + totalTransactions.totalTokenMints);
       
         // Update the table with the total transfers and total mints
         const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
         const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
         const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
+        const cell_totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(2)");
+        const cell_total_CRYPTOTRANSFER_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(3)");
+        const cell_total_TOKENMINT_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(3)");
+
+          totalTransfersCell.textContent = "";
+     totalMintsCell.textContent = "";
+     totalCreatesCell.textContent = "";
+     cell_totalCreatesCell .textContent = "";
+     cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
+     cell_total_TOKENMINT_FEES_PAID.textContent = "";
         
         totalCreatesCell.textContent = await getTokenCreationCost(tokenIds);
+        cell_totalCreatesCell.textContent = '1';
       
         if (totalTransfersCell && totalMintsCell) {
             totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
             totalMintsCell.textContent = totalTransactions.totalTokenMints;
+            cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = totalTransactions.CRYPTOTRANSFER_FEES_PAID;
+            cell_total_TOKENMINT_FEES_PAID.textContent = totalTransactions.TOKENMINT_FEES_PAID;
           } else {
             console.error("Error: Unable to find the table cells for total transfers and total mints.");
           }
       }
+
+  
+      
 
 
 
@@ -171,7 +189,7 @@
        let next = full_url;
        let next_url = next;
        //writing out which token is being fetched
-       console.log('Fetching data for token ID:', tokenId);
+       //console.log('Fetching data for token ID:', tokenId);
 
        // continue fetching data as long as there is a "next" element which is a link to the next page of data
        while (next) {
@@ -272,46 +290,83 @@
  
 
    async function getTransactions(tokenId) {
-     
-     console.log('Token ID: ' + tokenId)
-     const url_start = 'https://mainnet-public.mirrornode.hedera.com';
-     let totalTransfers = {
-       totalTokenTransfers: 0,
-       totalTokenMints: 0,
-     };
-     let tokenInfo = await axios.get(`${url_start}/api/v1/tokens/${tokenId}`);
-     let totalSupply = tokenInfo.data.total_supply;
-     //console.log(`Total supply for token ${tokenId}: ${totalSupply}`);
-     for(let serialNumber = 1; serialNumber <= totalSupply; serialNumber++) {
-       console.log('Serial Number: ' + serialNumber);
-       let next_url = `${url_start}/api/v1/tokens/${tokenId}/nfts/${serialNumber}/transactions`;
-       while (next_url) {
-         try {
-           let response = await axios.get(next_url);
-           let transactions = response.data.transactions;
-           transactions.forEach(transaction => {
-             if (transaction.type === "CRYPTOTRANSFER") {
-               totalTransfers.totalTokenTransfers += 1;
-             } else if (transaction.type === "TOKENMINT") {
-               totalTransfers.totalTokenMints += 1;
-             }
-           });
-           next_url = response.data.links.next ? url_start + response.data.links.next : null;
-         } catch (error) {
-           throw error;
-         }
-       }
+    const url_start = 'https://mainnet-public.mirrornode.hedera.com';
+    let totalTransfers = {
+      totalTokenTransfers: 0,
+      totalTokenMints: 0,
+      CRYPTOTRANSFER_FEES_PAID: 0,
+      TOKENMINT_FEES_PAID: 0,
+    };
+    let tokenInfo = await axios.get(`${url_start}/api/v1/tokens/${tokenId}`);
+    let totalSupply = tokenInfo.data.total_supply;
+    
+    for (let serialNumber = 1; serialNumber <= totalSupply; serialNumber++) {
+      let next_url = `${url_start}/api/v1/tokens/${tokenId}/nfts/${serialNumber}/transactions`;
+      
+      while (next_url) {
+        try {
+          let response = await axios.get(next_url);
+          let transactions = response.data.transactions;
+          
+          for (let transaction of transactions) {
+            if (transaction.type === "CRYPTOTRANSFER") {
+              console.log('Transaction: ' + transaction.type);
+              totalTransfers.totalTokenTransfers += 1;
+              totalTransfers.CRYPTOTRANSFER_FEES_PAID += await getTransactionFees(transaction);
+            } else if (transaction.type === "TOKENMINT") {
+              console.log('Transaction: ' + transaction.type);
+              totalTransfers.totalTokenMints += 1;
+              totalTransfers.TOKENMINT_FEES_PAID += await getTransactionFees(transaction);
+            }
+          }
+          
+          next_url = response.data.links.next ? url_start + response.data.links.next : null;
+        } catch (error) {
+          throw error;
+        }
+      }
     }
-  
-    //console.log(`Total CRYPTOTRANSFER transactions for token ${tokenId}: ${totalTransfers.totalTokenTransfers}`);
+    
     return totalTransfers;
+  }
+
+  // Helper function to calculate the fees paid for a transaction
+  //TODO: Calculate the price of hbar at each timestamp and use that to calculate the total fee revenue in USD
+  //TODO: On the next_url, check the type and entity_id to ensure it's TOKENMINT or CRYPTOTRANSFER for the expected token
+  async function getTransactionFees(transaction) {
+   
+    let feesPaid = 0;
+    let transaction_id = transaction.transaction_id;
+  
+    let next_url = 'https://mainnet-public.mirrornode.hedera.com/api/v1/transactions/' + transaction_id;
+   // console.log('Next URL (inside getTransactionFees): ' + next_url);
+    try {
+      let response = await axios.get(next_url);
+      let transactions = response.data.transactions;
+      let transfers = transactions[0].transfers; // Update to use transactions[0].transfers instead of transaction.transfers
+      
+      transfers.forEach(transfer => {
+        if (transfer.amount < 0) {
+          feesPaid += Math.abs(transfer.amount);
+          console.log('Fee added: ' + Math.abs(transfer.amount));
+        }
+      });
+  
+      feesPaid /= 100000000; // Convert feesPaid from tinybar to hbar
+           
+      return feesPaid;
+    } catch (error) {
+      throw error;
+    }
   }
 
 
 // This function gets the token creation fee for the given tokenId
 // It returns the token creation fee as a number
 // The token creation fee is used to calculate the total cost of the NFTs
-//
+
+
+//TODO: Check against transcations type and entity_id to ensure it's TOKENCREATION for the expected token
   async function getTokenCreationCost(tokenId) {
     let createdTimestamp = await getTimestamp(tokenId);
     
@@ -320,7 +375,7 @@
       //console.log('Timestamp URL: https://mainnet-public.mirrornode.hedera.com/api/v1/transactions?timestamp=' + createdTimestamp);
      // console.log(response);
       const data = response.data;
-      console.log('Node = ' + data.transactions.node);
+  
      // console.log('Data: ', data); // Log the data object directly
      const transfers = data.transactions[0].transfers;
 if (transfers && transfers.length > 0) {
@@ -330,6 +385,7 @@ if (transfers && transfers.length > 0) {
     let tokenCreationFee = -1 * amount;
     tokenCreationFee = tokenCreationFee / 100000000;
     console.log('Token Creation Fee: ' + tokenCreationFee + " hbar");
+    console.log('--------------------------------------------------------')
     return tokenCreationFee;
   } else {
     console.log('No transfers with negative amount found for the given tokenId.');
@@ -352,7 +408,7 @@ if (transfers && transfers.length > 0) {
       axios.get(`https://mainnet-public.mirrornode.hedera.com/api/v1/tokens/${tokenId}`)
         .then(response => {
           const createdTimestamp = response.data.created_timestamp;
-          console.log('Created Timestamp: ' + createdTimestamp);
+        
           resolve(createdTimestamp);
         })
         .catch(error => {
@@ -361,4 +417,6 @@ if (transfers && transfers.length > 0) {
         });
     });
   }
+
+  
   
