@@ -23,6 +23,10 @@
    const cell_total_TOKENASSOCATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(4)");
    const cell_total_TOKENASSOCATION_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(3)");
    const cell_total_TOKENASSOCATION_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(2)");
+   const cell_total_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(2)");
+   const cell_total_TRANSACTIONS_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(3)");
+   const cell_total_TRANSACTIONS_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(4)");
+
 
 
    form.addEventListener("submit", async (event) => {
@@ -48,6 +52,9 @@
       cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
       cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = "";
       cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
+      cell_total_TRANSACTIONS.textContent = "";
+      cell_total_TRANSACTIONS_FEES_PAID.textContent = "";
+      cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = "";
 
 
      const greaterThanBalanceInput = form.elements["greater-than-balance"];
@@ -93,7 +100,10 @@
             cell_total_TOKENASSOCATION_FEES_PAID.textContent = 'TODO';
             cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
             cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = 'TODO';
-             cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
+            cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
+            cell_total_TRANSACTIONS.textContent = 'TODO';
+            cell_total_TRANSACTIONS_FEES_PAID.textContent = 'TODO';
+            cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = 'TODO';
 
           } else {
             console.error("Error: Unable to find the table cells for total transfers and total mints.");
