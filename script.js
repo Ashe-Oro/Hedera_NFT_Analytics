@@ -279,6 +279,7 @@
     };
     let tokenInfo = await axios.get(`${url_start}/api/v1/tokens/${tokenId}`);
     let totalSupply = tokenInfo.data.total_supply;
+    let processedTransactions = new Set(); // Keep track of processed transaction IDs
     
     for (let serialNumber = 1; serialNumber <= totalSupply; serialNumber++) {
       let next_url = `${url_start}/api/v1/tokens/${tokenId}/nfts/${serialNumber}/transactions`;
@@ -289,14 +290,18 @@
           let transactions = response.data.transactions;
           
           for (let transaction of transactions) {
-            if (transaction.type === "CRYPTOTRANSFER") {
-              //console.log('Transaction: ' + transaction.type);
-              totalTransfers.totalTokenTransfers += 1;
-              totalTransfers.CRYPTOTRANSFER_FEES_PAID += await getTransactionFees(transaction);
-            } else if (transaction.type === "TOKENMINT") {
-             // console.log('Transaction: ' + transaction.type);
-              totalTransfers.totalTokenMints += 1;
-              totalTransfers.TOKENMINT_FEES_PAID += await getTransactionFees(transaction);
+            if (!processedTransactions.has(transaction.transaction_id)) { // Check if transaction ID has already been processed
+              processedTransactions.add(transaction.transaction_id); // Add transaction ID to the set of processed transactions
+              
+              if (transaction.type === "CRYPTOTRANSFER") {
+                totalTransfers.totalTokenTransfers += 1;
+                console.log('CRYPTOTRANSFER');
+                totalTransfers.CRYPTOTRANSFER_FEES_PAID += await getTransactionFees(transaction);
+              } else if (transaction.type === "TOKENMINT") {
+                totalTransfers.totalTokenMints += 1;
+                console.log('TOKENMINT');
+                totalTransfers.TOKENMINT_FEES_PAID += await getTransactionFees(transaction);
+              }
             }
           }
           
@@ -325,12 +330,13 @@
       let transactions = response.data.transactions;
       let transfers = transactions[0].transfers; // Update to use transactions[0].transfers instead of transaction.transfers
       
-      transfers.forEach(transfer => {
+      for (let i = 0; i < transfers.length; i++) {
+        let transfer = transfers[i];
         if (transfer.amount < 0) {
           feesPaid += Math.abs(transfer.amount);
-         // console.log('Fee added: ' + Math.abs(transfer.amount));
+          console.log('Fee added: ' + Math.abs(transfer.amount));
         }
-      });
+      }
   
       feesPaid /= 100000000; // Convert feesPaid from tinybar to hbar
            
