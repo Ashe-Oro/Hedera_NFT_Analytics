@@ -17,6 +17,17 @@
    const cell_totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(2)");
    const cell_total_CRYPTOTRANSFER_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(3)");
    const cell_total_TOKENMINT_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(3)");
+   const cell_total_TOKENMINT_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(4)");
+   const cell_total_CRYPTOTRANSFER_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(4)");
+   const cell_total_TOKENCREATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(4)");
+   const cell_total_TOKENASSOCATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(4)");
+   const cell_total_TOKENASSOCATION_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(3)");
+   const cell_total_TOKENASSOCATION_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(2)");
+   const cell_total_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(2)");
+   const cell_total_TRANSACTIONS_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(3)");
+   const cell_total_TRANSACTIONS_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(4)");
+
+
 
    form.addEventListener("submit", async (event) => {
      event.preventDefault();
@@ -29,8 +40,21 @@
       totalMintsCell.textContent = "";
       totalCreatesCell.textContent = "";
       cell_totalCreatesCell .textContent = "";
+      totalTransfersCell.textContent = "";
+      totalMintsCell.textContent = "";
       cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
-      cell_total_TOKENMINT_FEES_PAID.textContent = "";  
+      cell_total_TOKENMINT_FEES_PAID.textContent = "";
+      cell_total_TOKENMINT_FEES_PAID_USD.textContent = "";
+      cell_total_CRYPTOTRANSFER_FEES_PAID_USD.textContent = "";
+      cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
+      cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
+      cell_total_TOKENASSOCATION_FEES_PAID.textContent = "";
+      cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
+      cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = "";
+      cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
+      cell_total_TRANSACTIONS.textContent = "";
+      cell_total_TRANSACTIONS_FEES_PAID.textContent = "";
+      cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = "";
 
 
      const greaterThanBalanceInput = form.elements["greater-than-balance"];
@@ -54,21 +78,33 @@
         // Update the table with the total transfers and total mints
 
 
-      totalTransfersCell.textContent = "";
+    totalTransfersCell.textContent = "";
      totalMintsCell.textContent = "";
      totalCreatesCell.textContent = "";
      cell_totalCreatesCell .textContent = "";
      cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
      cell_total_TOKENMINT_FEES_PAID.textContent = "";
         
-        totalCreatesCell.textContent = await getTokenCreationCost(tokenIds);
+        totalCreatesCell.textContent = await getTokenCreationCost(tokenIds) + ' ℏ';
         cell_totalCreatesCell.textContent = '1';
       
         if (totalTransfersCell && totalMintsCell) {
             totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
             totalMintsCell.textContent = totalTransactions.totalTokenMints;
-            cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = totalTransactions.CRYPTOTRANSFER_FEES_PAID;
-            cell_total_TOKENMINT_FEES_PAID.textContent = totalTransactions.TOKENMINT_FEES_PAID;
+            cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = totalTransactions.CRYPTOTRANSFER_FEES_PAID  + ' ℏ';
+            cell_total_TOKENMINT_FEES_PAID.textContent = totalTransactions.TOKENMINT_FEES_PAID + ' ℏ';
+            cell_total_TOKENMINT_FEES_PAID_USD.textContent = '$' + totalTransactions.TOKENMINT_FEES_PAID_USD;
+            cell_total_CRYPTOTRANSFER_FEES_PAID_USD.textContent = '$' + totalTransactions.CRYPTOTRANSFER_FEES_PAID_USD;
+            cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
+            cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
+            cell_total_TOKENASSOCATION_FEES_PAID.textContent = 'TODO';
+            cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
+            cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = 'TODO';
+            cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
+            cell_total_TRANSACTIONS.textContent = 'TODO';
+            cell_total_TRANSACTIONS_FEES_PAID.textContent = 'TODO';
+            cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = 'TODO';
+
           } else {
             console.error("Error: Unable to find the table cells for total transfers and total mints.");
           }
@@ -276,6 +312,8 @@
       totalTokenMints: 0,
       CRYPTOTRANSFER_FEES_PAID: 0,
       TOKENMINT_FEES_PAID: 0,
+      CRYPTOTRANSFER_FEES_PAID_USD: 0,
+      TOKENMINT_FEES_PAID_USD: 0,
     };
     let tokenInfo = await axios.get(`${url_start}/api/v1/tokens/${tokenId}`);
     let totalSupply = tokenInfo.data.total_supply;
@@ -295,12 +333,16 @@
               
               if (transaction.type === "CRYPTOTRANSFER") {
                 totalTransfers.totalTokenTransfers += 1;
-                console.log('CRYPTOTRANSFER');
-                totalTransfers.CRYPTOTRANSFER_FEES_PAID += await getTransactionFees(transaction);
+               // console.log('CRYPTOTRANSFER');
+                const fees = await getTransactionFees(transaction);
+                totalTransfers.CRYPTOTRANSFER_FEES_PAID += fees.feesPaid;
+                totalTransfers.CRYPTOTRANSFER_FEES_PAID_USD += fees.feesPaidUSD;
               } else if (transaction.type === "TOKENMINT") {
                 totalTransfers.totalTokenMints += 1;
-                console.log('TOKENMINT');
-                totalTransfers.TOKENMINT_FEES_PAID += await getTransactionFees(transaction);
+               // console.log('TOKENMINT');
+                const fees = await getTransactionFees(transaction);
+                totalTransfers.TOKENMINT_FEES_PAID += fees.feesPaid;
+                totalTransfers.TOKENMINT_FEES_PAID_USD += fees.feesPaidUSD;
               }
             }
           }
@@ -314,33 +356,66 @@
     
     return totalTransfers;
   }
-
   // Helper function to calculate the fees paid for a transaction
   //TODO: Calculate the price of hbar at each timestamp and use that to calculate the total fee revenue in USD
   //TODO: On the next_url, check the type and entity_id to ensure it's TOKENMINT or CRYPTOTRANSFER for the expected token
+
+
   async function getTransactionFees(transaction) {
-   
     let feesPaid = 0;
     let transaction_id = transaction.transaction_id;
-  
     let next_url = 'https://mainnet-public.mirrornode.hedera.com/api/v1/transactions/' + transaction_id;
-   // console.log('Next URL (inside getTransactionFees): ' + next_url);
+  
     try {
       let response = await axios.get(next_url);
       let transactions = response.data.transactions;
-      let transfers = transactions[0].transfers; // Update to use transactions[0].transfers instead of transaction.transfers
-      
+      let transfers = transactions[0].transfers;
+  
       for (let i = 0; i < transfers.length; i++) {
         let transfer = transfers[i];
         if (transfer.amount < 0) {
           feesPaid += Math.abs(transfer.amount);
-          console.log('Fee added: ' + Math.abs(transfer.amount));
+         // console.log('Fee added: ' + Math.abs(transfer.amount));
         }
       }
   
       feesPaid /= 100000000; // Convert feesPaid from tinybar to hbar
-           
-      return feesPaid;
+  
+      // Retrieve the timestamp of the transaction
+      const timestamp = transactions[0].consensus_timestamp;
+  
+      // Construct the URL for the exchange rate endpoint
+      const exchangeRateURL = `https://mainnet-public.mirrornode.hedera.com/api/v1/network/exchangerate?timestamp=${timestamp}`;
+  
+      // Fetch the exchange rate data
+      const exchangeRateResponse = await axios.get(exchangeRateURL);
+      const exchangeRateData = exchangeRateResponse.data;
+  
+      // Extract the current rate object from the response
+      const currentRate = exchangeRateData.current_rate;
+  
+      // Extract the cent equivalent and hbar equivalent values
+      const centEquivalent = currentRate.cent_equivalent;
+      const hbarEquivalent = currentRate.hbar_equivalent;
+  
+      // Calculate the actual exchange rate in US cents
+      const exchangeRate = centEquivalent / hbarEquivalent;
+  
+      //console.log('Exchange Rate: ' + exchangeRate);
+  
+      // Calculate the USD value of the fees
+      let feesPaidUSD = feesPaid * exchangeRate;
+      feesPaidUSD /= 100; // Convert from cents to USD
+      feesPaidUSD = Math.round(feesPaidUSD * 10000) / 10000; // Round feesPaidUSD to 4 decimal places
+
+    
+
+      
+  
+      //console.log('Fees Paid: ' + feesPaid + ' hbar');
+      //console.log('Fees Paid USD: ' + feesPaidUSD + ' USD');
+  
+      return { feesPaid, feesPaidUSD };
     } catch (error) {
       throw error;
     }
