@@ -9,23 +9,23 @@
    tokenCountsTableBody.innerHTML = "";
    const countsTableBody = document.querySelector("#counts-table tbody");
    countsTableBody.innerHTML = "";
-   document.getElementById("total-transactions").value = "";
+  //  document.getElementById("total-transactions").value = "";
 
-   const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
-   const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
-   const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
-   const cell_totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(2)");
-   const cell_total_CRYPTOTRANSFER_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(3)");
-   const cell_total_TOKENMINT_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(3)");
-   const cell_total_TOKENMINT_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(4)");
-   const cell_total_CRYPTOTRANSFER_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(4)");
-   const cell_total_TOKENCREATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(4)");
-   const cell_total_TOKENASSOCATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(4)");
-   const cell_total_TOKENASSOCATION_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(3)");
-   const cell_total_TOKENASSOCATION_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(2)");
-   const cell_total_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(2)");
-   const cell_total_TRANSACTIONS_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(3)");
-   const cell_total_TRANSACTIONS_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(4)");
+  //  const totalTransfersCell = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(2)");
+  //  const totalMintsCell = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(2)");
+  //  const totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(3)");
+  //  const cell_totalCreatesCell = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(2)");
+  //  const cell_total_CRYPTOTRANSFER_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(3)");
+  //  const cell_total_TOKENMINT_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(3)");
+  //  const cell_total_TOKENMINT_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(2) td:nth-child(4)");
+  //  const cell_total_CRYPTOTRANSFER_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(1) td:nth-child(4)");
+  //  const cell_total_TOKENCREATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(3) td:nth-child(4)");
+  //  const cell_total_TOKENASSOCATION_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(4)");
+  //  const cell_total_TOKENASSOCATION_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(3)");
+  //  const cell_total_TOKENASSOCATION_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(4) td:nth-child(2)");
+  //  const cell_total_TRANSACTIONS = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(2)");
+  //  const cell_total_TRANSACTIONS_FEES_PAID = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(3)");
+  //  const cell_total_TRANSACTIONS_FEES_PAID_USD = document.querySelector("#total-transactions tbody tr:nth-child(5) td:nth-child(4)");
 
 
 
@@ -35,26 +35,26 @@
      holdersTableBody.innerHTML = "";
      tokenCountsTableBody.innerHTML = ""; // clear the token counts table body
      countsTableBody.innerHTML = "";
-     document.getElementById("total-transactions").value = "";
-     totalTransfersCell.textContent = "";
-      totalMintsCell.textContent = "";
-      totalCreatesCell.textContent = "";
-      cell_totalCreatesCell .textContent = "";
-      totalTransfersCell.textContent = "";
-      totalMintsCell.textContent = "";
-      cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
-      cell_total_TOKENMINT_FEES_PAID.textContent = "";
-      cell_total_TOKENMINT_FEES_PAID_USD.textContent = "";
-      cell_total_CRYPTOTRANSFER_FEES_PAID_USD.textContent = "";
-      cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
-      cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
-      cell_total_TOKENASSOCATION_FEES_PAID.textContent = "";
-      cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
-      cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = "";
-      cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
-      cell_total_TRANSACTIONS.textContent = "";
-      cell_total_TRANSACTIONS_FEES_PAID.textContent = "";
-      cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = "";
+    //  document.getElementById("total-transactions").value = "";
+    //  totalTransfersCell.textContent = "";
+    //   totalMintsCell.textContent = "";
+    //   totalCreatesCell.textContent = "";
+    //   cell_totalCreatesCell .textContent = "";
+    //   totalTransfersCell.textContent = "";
+    //   totalMintsCell.textContent = "";
+    //   cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
+    //   cell_total_TOKENMINT_FEES_PAID.textContent = "";
+    //   cell_total_TOKENMINT_FEES_PAID_USD.textContent = "";
+    //   cell_total_CRYPTOTRANSFER_FEES_PAID_USD.textContent = "";
+    //   cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
+    //   cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
+    //   cell_total_TOKENASSOCATION_FEES_PAID.textContent = "";
+    //   cell_total_TOKENCREATION_FEES_PAID_USD.textContent = "";
+    //   cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = "";
+    //   cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = "";
+    //   cell_total_TRANSACTIONS.textContent = "";
+    //   cell_total_TRANSACTIONS_FEES_PAID.textContent = "";
+    //   cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = "";
 
 
      const greaterThanBalanceInput = form.elements["greater-than-balance"];
@@ -70,45 +70,45 @@
 
       // Assuming the first token ID is used for getting transactions
       // Get the total number of transfers and mints for the first token ID
-      if (tokenIds.length > 0) {
-        const totalTransactions = await getTransactions(tokenIds);
+ //     if (tokenIds.length > 0) {
+ //       const totalTransactions = await getTransactions(tokenIds);
         //console.log('Total Transfers: ' + totalTransactions.totalTokenTransfers);
         //console.log('Total Mints: ' + totalTransactions.totalTokenMints);
       
         // Update the table with the total transfers and total mints
 
 
-    totalTransfersCell.textContent = "";
-     totalMintsCell.textContent = "";
-     totalCreatesCell.textContent = "";
-     cell_totalCreatesCell .textContent = "";
-     cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
-     cell_total_TOKENMINT_FEES_PAID.textContent = "";
+    // totalTransfersCell.textContent = "";
+    //  totalMintsCell.textContent = "";
+    //  totalCreatesCell.textContent = "";
+    //  cell_totalCreatesCell .textContent = "";
+    //  cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = "";
+    //  cell_total_TOKENMINT_FEES_PAID.textContent = "";
         
-        totalCreatesCell.textContent = await getTokenCreationCost(tokenIds) + ' ℏ';
-        cell_totalCreatesCell.textContent = '1';
+    //     totalCreatesCell.textContent = await getTokenCreationCost(tokenIds) + ' ℏ';
+    //     cell_totalCreatesCell.textContent = '1';
       
-        if (totalTransfersCell && totalMintsCell) {
-            totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
-            totalMintsCell.textContent = totalTransactions.totalTokenMints;
-            cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = totalTransactions.CRYPTOTRANSFER_FEES_PAID  + ' ℏ';
-            cell_total_TOKENMINT_FEES_PAID.textContent = totalTransactions.TOKENMINT_FEES_PAID + ' ℏ';
-            cell_total_TOKENMINT_FEES_PAID_USD.textContent = '$' + totalTransactions.TOKENMINT_FEES_PAID_USD;
-            cell_total_CRYPTOTRANSFER_FEES_PAID_USD.textContent = '$' + totalTransactions.CRYPTOTRANSFER_FEES_PAID_USD;
-            cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
-            cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
-            cell_total_TOKENASSOCATION_FEES_PAID.textContent = 'TODO';
-            cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
-            cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = 'TODO';
-            cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
-            cell_total_TRANSACTIONS.textContent = 'TODO';
-            cell_total_TRANSACTIONS_FEES_PAID.textContent = 'TODO';
-            cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = 'TODO';
+    //     if (totalTransfersCell && totalMintsCell) {
+    //         totalTransfersCell.textContent = totalTransactions.totalTokenTransfers;
+    //         totalMintsCell.textContent = totalTransactions.totalTokenMints;
+    //         cell_total_CRYPTOTRANSFER_FEES_PAID.textContent = totalTransactions.CRYPTOTRANSFER_FEES_PAID  + ' ℏ';
+    //         cell_total_TOKENMINT_FEES_PAID.textContent = totalTransactions.TOKENMINT_FEES_PAID + ' ℏ';
+    //         cell_total_TOKENMINT_FEES_PAID_USD.textContent = '$' + totalTransactions.TOKENMINT_FEES_PAID_USD;
+    //         cell_total_CRYPTOTRANSFER_FEES_PAID_USD.textContent = '$' + totalTransactions.CRYPTOTRANSFER_FEES_PAID_USD;
+    //         cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
+    //         cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
+    //         cell_total_TOKENASSOCATION_FEES_PAID.textContent = 'TODO';
+    //         cell_total_TOKENCREATION_FEES_PAID_USD.textContent = 'TODO';
+    //         cell_total_TOKENASSOCATION_TRANSACTIONS.textContent = 'TODO';
+    //         cell_total_TOKENASSOCATION_FEES_PAID_USD.textContent = 'TODO';
+    //         cell_total_TRANSACTIONS.textContent = 'TODO';
+    //         cell_total_TRANSACTIONS_FEES_PAID.textContent = 'TODO';
+    //         cell_total_TRANSACTIONS_FEES_PAID_USD.textContent = 'TODO';
 
-          } else {
-            console.error("Error: Unable to find the table cells for total transfers and total mints.");
-          }
-      }
+    //       } else {
+    //         console.error("Error: Unable to find the table cells for total transfers and total mints.");
+    //       }
+     //  }
 
   
      try {
